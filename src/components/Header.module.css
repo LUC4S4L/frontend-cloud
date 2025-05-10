@@ -1,0 +1,21 @@
+.header {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.brandName {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00b3c7;
+}

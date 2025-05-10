@@ -1,0 +1,111 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.discountBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #5a287d;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 14px;
+  width: fit-content;
+}
+
+.heartIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #00b3c7;
+  line-height: 1.2;
+}
+
+.highlight {
+  color: #00b3c7;
+}
+
+.description {
+  color: #4a5568;
+  font-size: 16px;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkboxLabel {
+  font-size: 14px;
+}
+
+.link {
+  color: #00b3c7;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .buttonGroup {
+    flex-direction: row;
+  }
+}
