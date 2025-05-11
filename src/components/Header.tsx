@@ -11,29 +11,13 @@ export default function Header() {
               Salud<span className="logo-highlight">Care</span>
             </span>
           </Link>
-          <nav className="nav">
-            <Link to="/" className="nav-link">
-              Inicio
-            </Link>
-            <Link to="/pacientes" className="nav-link">
-              Pacientes
-            </Link>
-            <Link to="/consultas" className="nav-link">
-              Consultas
-            </Link>
-            <Link to="/examenes" className="nav-link">
-              Exámenes
-            </Link>
-            <Link to="/historias" className="nav-link">
-              Historias
-            </Link>
-          </nav>
           
-          {/* Simplified user menu without the name */}
+          {/* Navigation menu removed */}
+          
+          {/* You can also remove this if you want */}
           <div className="user-menu">
             <button className="user-button">
               <span className="user-avatar">👨‍⚕️</span>
-              {/* Removed the user name */}
             </button>
           </div>
         </div>

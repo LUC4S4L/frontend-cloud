@@ -24,21 +24,7 @@
   color: var(--primary);
 }
 
-.nav {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-link {
-  color: #64748b;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-link:hover {
-  color: var(--primary);
-}
+/* Nav styles removed */
 
 .user-menu {
   position: relative;
@@ -64,13 +50,8 @@
   font-size: 1.25rem;
 }
 
-.user-name {
-  font-weight: 500;
-  color: #1e293b;
-}
+/* User name styles removed */
 
 @media (max-width: 768px) {
-  .nav {
-    display: none;
-  }
+  /* Mobile styles adjusted */
 }
