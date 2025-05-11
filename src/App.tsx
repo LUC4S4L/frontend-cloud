@@ -14,14 +14,15 @@ function App() {
   return (
     <div className="app">
       <Routes>
+        {/* Public routes */}
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-
+        
         {/* Protected routes */}
         <Route
           path={ROUTES.HOME}
           element={
             <ProtectedRoute>
-              <div className="app">
+              <div className="app-container">
                 <Header />
                 <main className="main-content">
                   <HomePage />
@@ -30,12 +31,12 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        
         <Route
           path={ROUTES.PACIENTES}
           element={
             <ProtectedRoute>
-              <div className="app">
+              <div className="app-container">
                 <Header />
                 <main className="main-content">
                   <Pacientes />
@@ -44,12 +45,12 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        
         <Route
           path={ROUTES.CONSULTAS}
           element={
             <ProtectedRoute>
-              <div className="app">
+              <div className="app-container">
                 <Header />
                 <main className="main-content">
                   <ConsultasMedicas />
@@ -58,12 +59,12 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        
         <Route
           path={ROUTES.EXAMENES}
           element={
             <ProtectedRoute>
-              <div className="app">
+              <div className="app-container">
                 <Header />
                 <main className="main-content">
                   <ExamenesLaboratorio />
@@ -72,12 +73,12 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        
         <Route
           path={ROUTES.HISTORIAS}
           element={
             <ProtectedRoute>
-              <div className="app">
+              <div className="app-container">
                 <Header />
                 <main className="main-content">
                   <HistoriasClinicas />
@@ -86,6 +87,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
+        {/* Fallback route for 404 */}
+        <Route path="*" element={<div>Page not found</div>} />
       </Routes>
     </div>
   )
