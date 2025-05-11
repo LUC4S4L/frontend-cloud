@@ -1,12 +1,13 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import PacientesPage from "./pages/Pacientes";
-import ConsultasMedicasPage from "./pages/ConsultasMedicas";
-import ExamenesLaboratorioPage from "./pages/ExamenesLaboratorio";
-import HistoriasClinicasPage from "./pages/HistoriasClinicas";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import PacientesPage from './app/Pacientes';
+import ConsultasMedicasPage from './app/ConsultasMedicas';
+import ExamenesLaboratorioPage from './app/ExamenesLaboratorio';
+import HistoriasClinicasPage from './app/HistoriasClinicas';
+import './index.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
@@ -18,6 +19,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

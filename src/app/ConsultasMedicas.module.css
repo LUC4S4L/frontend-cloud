@@ -1,0 +1,187 @@
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(90, 40, 125, 0.1);
+  border-radius: 8px;
+  margin-right: 16px;
+  color: #5a287d;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #5a287d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.addButton:hover {
+  background-color: #4a1d6d;
+}
+
+.searchContainer {
+  margin-bottom: 24px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 12px;
+}
+
+.searchInput {
+  flex: 1;
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  color: #4a5568;
+}
+
+.consultasContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.consultasTable {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.consultasTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.consultasTable th {
+  background-color: #f7fafc;
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.consultasTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.consultasTable tr:last-child td {
+  border-bottom: none;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pendiente {
+  background-color: #ebf8ff;
+  color: #3182ce;
+}
+
+.completada {
+  background-color: #f0fff4;
+  color: #38a169;
+}
+
+.cancelada {
+  background-color: #fff5f5;
+  color: #e53e3e;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.viewButton,
+.editButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.viewButton {
+  background-color: #e6fffa;
+  color: #00b3c7;
+}
+
+.viewButton:hover {
+  background-color: #b2f5ea;
+}
+
+.editButton {
+  background-color: #ebf8ff;
+  color: #3182ce;
+}
+
+.editButton:hover {
+  background-color: #bee3f8;
+}
+
+.deleteButton {
+  background-color: #fff5f5;
+  color: #e53e3e;
+}
+
+.deleteButton:hover {
+  background-color: #fed7d7;
+}
+
+.noResults {
+  padding: 48px 0;
+  text-align: center;
+  color: #4a5568;
+}

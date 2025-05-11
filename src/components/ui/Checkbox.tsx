@@ -1,34 +1,36 @@
-import React from "react";
+import React, { InputHTMLAttributes } from 'react';
 import { Check } from 'lucide-react';
-import styles from "./Checkbox.module.css";
+import styles from './Checkbox.module.css';
 
-interface CheckboxProps {
-  id?: string;
+interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  id: string;
   checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  className?: string;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
-  id,
-  checked = false,
-  onChange,
-  className,
+const Checkbox: React.FC<CheckboxProps> = ({ 
+  id, 
+  checked = false, 
+  onChange, 
+  className = '',
+  disabled = false,
+  ...props 
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChange) onChange(e.target.checked);
+    if (onChange && !disabled) onChange(e);
   };
 
   return (
-    <div className={`${styles.checkboxContainer} ${className || ""}`}>
+    <div className={`${styles.checkboxContainer} ${className}`}>
       <input
         type="checkbox"
         id={id}
         checked={checked}
         onChange={handleChange}
+        disabled={disabled}
         className={styles.checkboxInput}
+        {...props}
       />
-      <div className={styles.checkboxControl}>
+      <div className={`${styles.checkboxControl} ${disabled ? styles.disabled : ''}`}>
         {checked && <Check className={styles.checkIcon} />}
       </div>
     </div>
