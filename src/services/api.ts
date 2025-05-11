@@ -1,27 +1,27 @@
 import axios from "axios"
 
 // Base URLs for different services
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api"
-const ORQUESTADOR_BASE_URL = import.meta.env.VITE_ORQUESTADOR_URL || "http://localhost:8002/api"
-const CONSULTAS_BASE_URL = import.meta.env.VITE_CONSULTAS_URL || "http://localhost:8001/api"
+const PACIENTES_URL = import.meta.env.VITE_PACIENTES_URL || "http://localhost:8000/api"
+const ORQUESTADOR_URL = import.meta.env.VITE_ORQUESTADOR_URL || "http://localhost:8002/api"
+const CONSULTAS_URL = import.meta.env.VITE_CONSULTAS_URL || "http://localhost:8001/api"
 
 // Create service-specific instances
 export const pacientesApi = axios.create({
-  baseURL: `${API_BASE_URL}/pacientes`,
+  baseURL: PACIENTES_URL,
   headers: {
     "Content-Type": "application/json",
   },
 })
 
 export const consultasApi = axios.create({
-  baseURL: CONSULTAS_BASE_URL,
+  baseURL: CONSULTAS_URL,
   headers: {
     "Content-Type": "application/json",
   },
 })
 
 export const orquestadorApi = axios.create({
-  baseURL: ORQUESTADOR_BASE_URL,
+  baseURL: ORQUESTADOR_URL,
   headers: {
     "Content-Type": "application/json",
   },

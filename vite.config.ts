@@ -9,14 +9,23 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    sourcemap: true,
-  },
   server: {
-    port: 5173,
-    open: true,
-    hmr: {
-      overlay: true,
+    proxy: {
+      "/api/pacientes": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/pacientes/, ""),
+      },
+      "/api/consultas": {
+        target: "http://localhost:8001",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/consultas/, ""),
+      },
+      "/api/orquestador": {
+        target: "http://localhost:8002",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/orquestador/, ""),
+      },
     },
   },
 })
