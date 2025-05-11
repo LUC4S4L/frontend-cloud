@@ -1,190 +1,74 @@
 import { orquestadorApi } from "./api"
-import type { Paciente } from "../types/patient"
-import type { Consulta } from "../types/consulta"
-import type { LabTest } from "../types/labTest"
-import type { MedicalRecord } from "../types/medicalRecord"
+import { ORQUESTADOR_ENDPOINTS } from "@/common/constants/apiEndpoints"
 
-// Define response types for better type safety
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-  message?: string
+interface DashboardData {
+  totalPacientes: number
+  totalConsultas: number
+  examenesCompletados: number
+  examenesEnProceso: number
+  consultasRecientes: any[]
+  pacientesRecientes: any[]
 }
 
-interface PaginatedResponse<T> {
-  success: boolean
-  data: {
-    items: T[]
-    total: number
-    page: number
-    limit: number
-  }
-  message?: string
+interface PacienteCompleto {
+  paciente: any
+  consultas: any[]
+  examenes: any[]
+  expedientes: any[]
 }
 
-// Orquestador service methods
 export const orquestadorService = {
-  // Patient orchestration methods
-  async getPacienteCompleto(pacienteId: string): Promise<
-    ApiResponse<{
-      paciente: Paciente
-      consultas: Consulta[]
-      labTests: LabTest[]
-      medicalRecords: MedicalRecord[]
-    }>
-  > {
-    const response = await orquestadorApi.get<
-      ApiResponse<{
-        paciente: Paciente
-        consultas: Consulta[]
-        labTests: LabTest[]
-        medicalRecords: MedicalRecord[]
-      }>
-    >(`/pacientes/${pacienteId}/completo`)
-    return response.data
+  /**
+   * Get dashboard data
+   */
+  getDashboardData: async (): Promise<DashboardData> => {
+    try {
+      const response = await orquestadorApi.get(ORQUESTADOR_ENDPOINTS.DASHBOARD)
+      return response.data
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error)
+      throw error
+    }
   },
 
-  // Dashboard data methods
-  async getDashboardData(): Promise<
-    ApiResponse<{
-      totalPacientes: number
-      totalConsultas: number
-      consultasPorEstado: Record<string, number>
-      consultasRecientes: Consulta[]
-    }>
-  > {
-    const response =
-      await orquestadorApi.get<
-        ApiResponse<{
-          totalPacientes: number
-          totalConsultas: number
-          consultasPorEstado: Record<string, number>
-          consultasRecientes: Consulta[]
-        }>
-      >("/dashboard")
-    return response.data
+  /**
+   * Get complete patient data
+   */
+  getPacienteCompleto: async (pacienteId: string): Promise<PacienteCompleto> => {
+    try {
+      const response = await orquestadorApi.get(ORQUESTADOR_ENDPOINTS.PACIENTE_COMPLETO(pacienteId))
+      return response.data
+    } catch (error) {
+      console.error(`Error fetching complete data for patient with ID ${pacienteId}:`, error)
+      throw error
+    }
   },
 
-  // Search across multiple entities
-  async searchGlobal(query: string): Promise<
-    ApiResponse<{
-      pacientes: Paciente[]
-      consultas: Consulta[]
-      labTests: LabTest[]
-    }>
-  > {
-    const response = await orquestadorApi.get<
-      ApiResponse<{
-        pacientes: Paciente[]
-        consultas: Consulta[]
-        labTests: LabTest[]
-      }>
-    >("/search", { params: { q: query } })
-    return response.data
+  /**
+   * Global search across all entities
+   */
+  searchGlobal: async (query: string): Promise<any> => {
+    try {
+      const response = await orquestadorApi.get(ORQUESTADOR_ENDPOINTS.SEARCH_GLOBAL, {
+        params: { q: query },
+      })
+      return response.data
+    } catch (error) {
+      console.error(`Error performing global search with query "${query}":`, error)
+      throw error
+    }
   },
 
-  // Reports and analytics
-  async getReporteConsultas(
-    startDate: string,
-    endDate: string,
-    filters?: {
-      especialidad?: string
-      estado?: string
-    },
-  ): Promise<
-    ApiResponse<{
-      totalConsultas: number
-      consultasPorEspecialidad: Record<string, number>
-      consultasPorEstado: Record<string, number>
-      consultasPorDia: Record<string, number>
-    }>
-  > {
-    const response = await orquestadorApi.get<
-      ApiResponse<{
-        totalConsultas: number
-        consultasPorEspecialidad: Record<string, number>
-        consultasPorEstado: Record<string, number>
-        consultasPorDia: Record<string, number>
-      }>
-    >("/reportes/consultas", {
-      params: {
-        startDate,
-        endDate,
-        ...filters,
-      },
-    })
-    return response.data
-  },
-
-  // Notifications
-  async getNotificaciones(userId: string): Promise<
-    ApiResponse<{
-      notificaciones: Array<{
-        id: string
-        tipo: string
-        mensaje: string
-        leida: boolean
-        fecha: string
-        entidadId?: string
-        entidadTipo?: string
-      }>
-      noLeidas: number
-    }>
-  > {
-    const response = await orquestadorApi.get<
-      ApiResponse<{
-        notificaciones: Array<{
-          id: string
-          tipo: string
-          mensaje: string
-          leida: boolean
-          fecha: string
-          entidadId?: string
-          entidadTipo?: string
-        }>
-        noLeidas: number
-      }>
-    >(`/usuarios/${userId}/notificaciones`)
-    return response.data
-  },
-
-  async marcarNotificacionLeida(notificacionId: string): Promise<ApiResponse<{ success: boolean }>> {
-    const response = await orquestadorApi.patch<ApiResponse<{ success: boolean }>>(
-      `/notificaciones/${notificacionId}/leer`,
-    )
-    return response.data
-  },
-
-  // System health check
-  async getSystemStatus(): Promise<
-    ApiResponse<{
-      servicios: Record<
-        string,
-        {
-          status: "up" | "down" | "degraded"
-          latencia: number
-          ultimaActualizacion: string
-        }
-      >
-      general: "healthy" | "degraded" | "down"
-    }>
-  > {
-    const response =
-      await orquestadorApi.get<
-        ApiResponse<{
-          servicios: Record<
-            string,
-            {
-              status: "up" | "down" | "degraded"
-              latencia: number
-              ultimaActualizacion: string
-            }
-          >
-          general: "healthy" | "degraded" | "down"
-        }>
-      >("/system/health")
-    return response.data
+  /**
+   * Check system health
+   */
+  checkSystemHealth: async (): Promise<any> => {
+    try {
+      const response = await orquestadorApi.get(ORQUESTADOR_ENDPOINTS.SYSTEM_STATUS)
+      return response.data
+    } catch (error) {
+      console.error("Error checking system health:", error)
+      throw error
+    }
   },
 }
-
-export default orquestadorService

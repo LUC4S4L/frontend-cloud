@@ -1,132 +1,116 @@
-import { useState, useEffect, useCallback } from 'react';
-import { pacientesService } from '../services/pacientesService';
-import { Paciente, PatientFormData } from '../types/patient';
+import { useState, useEffect, useCallback } from "react"
+import { pacientesService } from "@/services/pacientesService"
+import type { Paciente, PacienteFormData } from "@/types/paciente"
 
-export const usePacientes = () => {
-  const [patients, setPatients] = useState<Paciente[]>([]);
-  const [currentPatient, setCurrentPatient] = useState<Paciente | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+export function usePacientes() {
+  const [pacientes, setPacientes] = useState<Paciente[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const fetchPatients = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const fetchPacientes = useCallback(async () => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await pacientesService.getAllPatients();
-      setPatients(data);
+      const data = await pacientesService.getAll()
+      setPacientes(data)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch patients';
-      setError(errorMessage);
-      console.error('Error fetching patients:', err);
+      setError("Error al cargar los pacientes")
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
-  const getPatientById = useCallback(async (id: string) => {
-    setLoading(true);
-    setError(null);
+  const getPacienteById = useCallback(async (id: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await pacientesService.getPatientById(id);
-      setCurrentPatient(data);
-      return data;
+      return await pacientesService.getById(id)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to fetch patient with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error fetching patient with ID: ${id}`, err);
-      return null;
+      setError("Error al cargar el paciente")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
-  const createPatient = async (patientData: PatientFormData) => {
-    setLoading(true);
-    setError(null);
+  const createPaciente = useCallback(async (data: PacienteFormData) => {
+    setLoading(true)
+    setError(null)
     try {
-      const newPatient = await pacientesService.createPatient(patientData);
-      setPatients(prev => [...prev, newPatient]);
-      return newPatient;
+      const newPaciente = await pacientesService.create(data)
+      setPacientes((prev) => [...prev, newPaciente])
+      return newPaciente
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create patient';
-      setError(errorMessage);
-      console.error('Error creating patient:', err);
-      throw err;
+      setError("Error al crear el paciente")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const updatePatient = async (id: string, patientData: PatientFormData) => {
-    setLoading(true);
-    setError(null);
+  const updatePaciente = useCallback(async (id: string, data: PacienteFormData) => {
+    setLoading(true)
+    setError(null)
     try {
-      const updatedPatient = await pacientesService.updatePatient(id, patientData);
-      setPatients(prev => prev.map(p => p.id === id ? updatedPatient : p));
-      if (currentPatient?.id === id) {
-        setCurrentPatient(updatedPatient);
-      }
-      return updatedPatient;
+      const updatedPaciente = await pacientesService.update(id, data)
+      setPacientes((prev) => prev.map((p) => (p.id === id ? updatedPaciente : p)))
+      return updatedPaciente
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to update patient with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error updating patient with ID: ${id}`, err);
-      throw err;
+      setError("Error al actualizar el paciente")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const deletePatient = async (id: string) => {
-    setLoading(true);
-    setError(null);
+  const deletePaciente = useCallback(async (id: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      await pacientesService.deletePatient(id);
-      setPatients(prev => prev.filter(p => p.id !== id));
-      if (currentPatient?.id === id) {
-        setCurrentPatient(null);
-      }
+      await pacientesService.delete(id)
+      setPacientes((prev) => prev.filter((p) => p.id !== id))
+      return true
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to delete patient with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error deleting patient with ID: ${id}`, err);
-      throw err;
+      setError("Error al eliminar el paciente")
+      console.error(err)
+      return false
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const searchPatients = async (query: string) => {
-    setLoading(true);
-    setError(null);
+  const searchPacientes = useCallback(async (query: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await pacientesService.searchPatients(query);
-      setPatients(data);
-      return data;
+      const results = await pacientesService.search(query)
+      return results
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to search patients';
-      setError(errorMessage);
-      console.error('Error searching patients:', err);
-      return [];
+      setError("Error al buscar pacientes")
+      console.error(err)
+      return []
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
   useEffect(() => {
-    fetchPatients();
-  }, [fetchPatients]);
+    fetchPacientes()
+  }, [fetchPacientes])
 
   return {
-    patients,
-    currentPatient,
+    pacientes,
     loading,
     error,
-    fetchPatients,
-    getPatientById,
-    createPatient,
-    updatePatient,
-    deletePatient,
-    searchPatients
-  };
-};
+    fetchPacientes,
+    getPacienteById,
+    createPaciente,
+    updatePaciente,
+    deletePaciente,
+    searchPacientes,
+  }
+}

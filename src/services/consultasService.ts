@@ -1,66 +1,95 @@
-// services/consultasService.ts
-import { Consulta, ConsultaFormData } from '../types/consulta';
-import apiClient from './apiClient';
-
-const API_URL = import.meta.env.VITE_CONSULTAS_URL || 'http://localhost:8001/api';
+import { consultasApi } from "./api"
+import type { Consulta, ConsultaFormData } from "@/types/consulta"
+import { CONSULTAS_ENDPOINTS } from "@/common/constants/apiEndpoints"
 
 export const consultasService = {
-  getAllConsultas: async (): Promise<Consulta[]> => {
+  /**
+   * Get all consultations
+   */
+  getAll: async (): Promise<Consulta[]> => {
     try {
-      const response = await apiClient.get(`${API_URL}/consultas`);
-      return response.data;
+      const response = await consultasApi.get(CONSULTAS_ENDPOINTS.GET_ALL)
+      return response.data
     } catch (error) {
-      console.error('Error fetching consultas:', error);
-      throw error;
+      console.error("Error fetching consultations:", error)
+      throw error
     }
   },
 
-  getConsultaById: async (id: string): Promise<Consulta> => {
+  /**
+   * Get consultation by ID
+   */
+  getById: async (id: string): Promise<Consulta> => {
     try {
-      const response = await apiClient.get(`${API_URL}/consultas/${id}`);
-      return response.data;
+      const response = await consultasApi.get(CONSULTAS_ENDPOINTS.GET_BY_ID(id))
+      return response.data
     } catch (error) {
-      console.error(`Error fetching consulta with ID ${id}:`, error);
-      throw error;
+      console.error(`Error fetching consultation with ID ${id}:`, error)
+      throw error
     }
   },
 
-  getConsultasByPatientId: async (patientId: string): Promise<Consulta[]> => {
+  /**
+   * Create new consultation
+   */
+  create: async (data: ConsultaFormData): Promise<Consulta> => {
     try {
-      const response = await apiClient.get(`${API_URL}/consultas?pacienteId=${patientId}`);
-      return response.data;
+      const response = await consultasApi.post(CONSULTAS_ENDPOINTS.CREATE, data)
+      return response.data
     } catch (error) {
-      console.error(`Error fetching consultas for patient ID ${patientId}:`, error);
-      throw error;
+      console.error("Error creating consultation:", error)
+      throw error
     }
   },
 
-  createConsulta: async (consultaData: ConsultaFormData): Promise<Consulta> => {
+  /**
+   * Update existing consultation
+   */
+  update: async (id: string, data: ConsultaFormData): Promise<Consulta> => {
     try {
-      const response = await apiClient.post(`${API_URL}/consultas`, consultaData);
-      return response.data;
+      const response = await consultasApi.put(CONSULTAS_ENDPOINTS.UPDATE(id), data)
+      return response.data
     } catch (error) {
-      console.error('Error creating consulta:', error);
-      throw error;
+      console.error(`Error updating consultation with ID ${id}:`, error)
+      throw error
     }
   },
 
-  updateConsulta: async (id: string, consultaData: ConsultaFormData): Promise<Consulta> => {
+  /**
+   * Delete consultation
+   */
+  delete: async (id: string): Promise<void> => {
     try {
-      const response = await apiClient.put(`${API_URL}/consultas/${id}`, consultaData);
-      return response.data;
+      await consultasApi.delete(CONSULTAS_ENDPOINTS.DELETE(id))
     } catch (error) {
-      console.error(`Error updating consulta with ID ${id}:`, error);
-      throw error;
+      console.error(`Error deleting consultation with ID ${id}:`, error)
+      throw error
     }
   },
 
-  deleteConsulta: async (id: string): Promise<void> => {
+  /**
+   * Update consultation status
+   */
+  updateStatus: async (id: string, status: string): Promise<Consulta> => {
     try {
-      await apiClient.delete(`${API_URL}/consultas/${id}`);
+      const response = await consultasApi.patch(CONSULTAS_ENDPOINTS.UPDATE_STATUS(id), { status })
+      return response.data
     } catch (error) {
-      console.error(`Error deleting consulta with ID ${id}:`, error);
-      throw error;
+      console.error(`Error updating status for consultation with ID ${id}:`, error)
+      throw error
     }
-  }
-};
+  },
+
+  /**
+   * Get consultations by patient ID
+   */
+  getByPacienteId: async (pacienteId: string): Promise<Consulta[]> => {
+    try {
+      const response = await consultasApi.get(CONSULTAS_ENDPOINTS.GET_BY_PACIENTE(pacienteId))
+      return response.data
+    } catch (error) {
+      console.error(`Error fetching consultations for patient with ID ${pacienteId}:`, error)
+      throw error
+    }
+  },
+}

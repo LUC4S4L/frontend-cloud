@@ -1,124 +1,119 @@
-import { useState, useEffect, useCallback } from 'react';
-import { consultasService } from '../services/consultasService';
-import { Consulta, ConsultaFormData } from '../types/consulta';
+"use client"
 
-export const useConsultas = () => {
-  const [consultas, setConsultas] = useState<Consulta[]>([]);
-  const [currentConsulta, setCurrentConsulta] = useState<Consulta | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+import { useState, useEffect, useCallback } from "react"
+import { consultasService } from "@/services/consultasService"
+import type { Consulta, ConsultaFormData } from "@/types/consulta"
+
+export function useConsultas(pacienteId?: string) {
+  const [consultas, setConsultas] = useState<Consulta[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchConsultas = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const data = await consultasService.getAllConsultas();
-      setConsultas(data);
+      let data: Consulta[]
+
+      if (pacienteId) {
+        data = await consultasService.getByPacienteId(pacienteId)
+      } else {
+        data = await consultasService.getAll()
+      }
+
+      setConsultas(data)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch consultations';
-      setError(errorMessage);
-      console.error('Error fetching consultations:', err);
+      setError("Error al cargar las consultas")
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [pacienteId])
 
   const getConsultaById = useCallback(async (id: string) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const data = await consultasService.getConsultaById(id);
-      setCurrentConsulta(data);
-      return data;
+      return await consultasService.getById(id)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to fetch consultation with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error fetching consultation with ID: ${id}`, err);
-      return null;
+      setError("Error al cargar la consulta")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [])
 
-  const createConsulta = async (consultaData: ConsultaFormData) => {
-    setLoading(true);
-    setError(null);
+  const createConsulta = useCallback(async (data: ConsultaFormData) => {
+    setLoading(true)
+    setError(null)
     try {
-      const newConsulta = await consultasService.createConsulta(consultaData);
-      setConsultas(prev => [...prev, newConsulta]);
-      return newConsulta;
+      const newConsulta = await consultasService.create(data)
+      setConsultas((prev) => [...prev, newConsulta])
+      return newConsulta
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create consultation';
-      setError(errorMessage);
-      console.error('Error creating consultation:', err);
-      throw err;
+      setError("Error al crear la consulta")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const updateConsulta = async (id: string, consultaData: ConsultaFormData) => {
-    setLoading(true);
-    setError(null);
+  const updateConsulta = useCallback(async (id: string, data: ConsultaFormData) => {
+    setLoading(true)
+    setError(null)
     try {
-      const updatedConsulta = await consultasService.updateConsulta(id, consultaData);
-      setConsultas(prev => prev.map(c => c.id === id ? updatedConsulta : c));
-      if (currentConsulta?.id === id) {
-        setCurrentConsulta(updatedConsulta);
-      }
-      return updatedConsulta;
+      const updatedConsulta = await consultasService.update(id, data)
+      setConsultas((prev) => prev.map((c) => (c.id === id ? updatedConsulta : c)))
+      return updatedConsulta
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to update consultation with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error updating consultation with ID: ${id}`, err);
-      throw err;
+      setError("Error al actualizar la consulta")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const deleteConsulta = async (id: string) => {
-    setLoading(true);
-    setError(null);
+  const deleteConsulta = useCallback(async (id: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      await consultasService.deleteConsulta(id);
-      setConsultas(prev => prev.filter(c => c.id !== id));
-      if (currentConsulta?.id === id) {
-        setCurrentConsulta(null);
-      }
+      await consultasService.delete(id)
+      setConsultas((prev) => prev.filter((c) => c.id !== id))
+      return true
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to delete consultation with ID: ${id}`;
-      setError(errorMessage);
-      console.error(`Error deleting consultation with ID: ${id}`, err);
-      throw err;
+      setError("Error al eliminar la consulta")
+      console.error(err)
+      return false
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
-  const getConsultasByPatientId = async (patientId: string) => {
-    setLoading(true);
-    setError(null);
+  const updateConsultaStatus = useCallback(async (id: string, status: string) => {
+    setLoading(true)
+    setError(null)
     try {
-      const data = await consultasService.getConsultasByPatientId(patientId);
-      return data;
+      const updatedConsulta = await consultasService.updateStatus(id, status)
+      setConsultas((prev) => prev.map((c) => (c.id === id ? updatedConsulta : c)))
+      return updatedConsulta
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : `Failed to fetch consultations for patient ID: ${patientId}`;
-      setError(errorMessage);
-      console.error(`Error fetching consultations for patient ID: ${patientId}`, err);
-      return [];
+      setError("Error al actualizar el estado de la consulta")
+      console.error(err)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
   useEffect(() => {
-    fetchConsultas();
-  }, [fetchConsultas]);
+    fetchConsultas()
+  }, [fetchConsultas])
 
   return {
     consultas,
-    currentConsulta,
     loading,
     error,
     fetchConsultas,
@@ -126,6 +121,6 @@ export const useConsultas = () => {
     createConsulta,
     updateConsulta,
     deleteConsulta,
-    getConsultasByPatientId
-  };
-};
+    updateConsultaStatus,
+  }
+}
