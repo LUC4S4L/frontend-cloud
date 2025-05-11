@@ -28,10 +28,12 @@ export default function Header() {
               Historias
             </Link>
           </nav>
+          
+          {/* Simplified user menu without the name */}
           <div className="user-menu">
             <button className="user-button">
               <span className="user-avatar">👨‍⚕️</span>
-              <span className="user-name">Dr. Usuario</span>
+              {/* Removed the user name */}
             </button>
           </div>
         </div>
