@@ -1,66 +1,40 @@
 import axios from "axios"
 
-// Base URLs for different services
-const PACIENTES_URL = import.meta.env.VITE_PACIENTES_URL || "http://localhost:8000/api"
-const ORQUESTADOR_URL = import.meta.env.VITE_ORQUESTADOR_URL || "http://localhost:8002/api"
-const CONSULTAS_URL = import.meta.env.VITE_CONSULTAS_URL || "http://localhost:8001/api"
-
-// Create service-specific instances
+// Create an instance for the pacientes API
 export const pacientesApi = axios.create({
-  baseURL: PACIENTES_URL,
+  baseURL: '/api',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json'
   },
+  timeout: 10000
 })
 
-export const consultasApi = axios.create({
-  baseURL: CONSULTAS_URL,
-  headers: {
-    "Content-Type": "application/json",
+// Add request interceptor for logging
+pacientesApi.interceptors.request.use(
+  (config) => {
+    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`)
+    return config
   },
-})
-
-export const orquestadorApi = axios.create({
-  baseURL: ORQUESTADOR_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-})
-
-// Add auth token to requests
-const addAuthToken = (config: any) => {
-  const token = localStorage.getItem("authToken")
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  (error) => {
+    console.error("API Request Error:", error)
+    return Promise.reject(error)
   }
-  return config
-}
+)
 
-// Add request interceptors
-pacientesApi.interceptors.request.use(addAuthToken)
-consultasApi.interceptors.request.use(addAuthToken)
-orquestadorApi.interceptors.request.use(addAuthToken)
-
-// Add response interceptors for error handling
-const handleResponseError = (error: any) => {
-  if (error.response) {
-    const { status } = error.response
-    if (status === 401) {
-      console.error("Unauthorized access. Please log in again.")
-      // Handle unauthorized (redirect to login)
-    } else if (status === 403) {
-      console.error("Forbidden access.")
-    } else if (status >= 500) {
-      console.error("Server error. Please try again later.")
+// Add response interceptor for logging
+pacientesApi.interceptors.response.use(
+  (response) => {
+    console.log(`API Response Success: ${response.status}`)
+    return response
+  },
+  (error) => {
+    if (error.response) {
+      console.error(`API Response Error: ${error.response.status}`, error.response.data)
+    } else if (error.request) {
+      console.error("API No Response:", error.message)
+    } else {
+      console.error("API Error:", error.message)
     }
-  } else if (error.request) {
-    console.error("Network error. Please check your connection.")
-  } else {
-    console.error("Error:", error.message)
+    return Promise.reject(error)
   }
-  return Promise.reject(error)
-}
-
-pacientesApi.interceptors.response.use((response) => response, handleResponseError)
-consultasApi.interceptors.response.use((response) => response, handleResponseError)
-orquestadorApi.interceptors.response.use((response) => response, handleResponseError)
+)
